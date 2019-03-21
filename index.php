@@ -21,7 +21,9 @@
 			<ul>
 				<li><a class="home-link" href="index.php">Home</a></li>
 				<li><a href="character.php">Manage Hero</a></li>
-				<li><a href="qlindex.php">View Item Index</a></li>
+				<li><a href="weaponindex.php">Weapon Index</a></li>
+				<li><a href="gearindex.php">Gear Index</a></li>
+				<li><a href="runeindex.php">Orb Index</a></li>
 			</ul>
 		</nav> 
 	</header>
@@ -32,7 +34,7 @@
 			</div>
 			<div class="descriptionText">
 				<h1><p id="imgAlbum">Version: 0.0.1</p></h1>
-				<h3><p id="imgTag">Created a base version of the questland character manager.</p></h3>
+				<h3><p id="imgTag">Created a base version of the questland item and orb index.</p></h3>
 			</div>
 		</div>
 

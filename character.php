@@ -1,8 +1,3 @@
-<?php
-	 require ('razrAWS.php');
-	 use razrPHP as RAZR;
-	 $razr = new RAZR\rDynamo ();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +20,9 @@
 			<ul>
 				<li><a class="home-link" href="index.php">Home</a></li>
 				<li><a href="character.php">Manage Hero</a></li>
-				<li><a href="qlindex.php">View Item Index</a></li>
+				<li><a href="weaponindex.php">Weapon Index</a></li>
+				<li><a href="gearindex.php">Gear Index</a></li>
+				<li><a href="runeindex.php">Orb Index</a></li>
 			</ul>
 		</nav> 
 	</header>
