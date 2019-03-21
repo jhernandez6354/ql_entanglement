@@ -1,13 +1,14 @@
 <?php
-require_once('header.php');
-$name = $_SESSION['username'];
+	 require ('razrAWS.php');
+	 use razrPHP as RAZR;
+	 $razr = new RAZR\rDynamo ();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" http-equiv="Cache-control" content="public" charset="utf-8">
-	<title>MyTosis - My Images</title>
-	<meta name="description" content="MyTosis Media Repository"/>
+	<title>Questland Hero Manager</title>
+	<meta name="description" content="Questland Hero Manager"/>
 	<link href="css/style.css" rel="stylesheet">
 </head>
 <body>
@@ -15,22 +16,18 @@ $name = $_SESSION['username'];
 <!--_____________________________________Header____________________________________ -->
 		<header>
 			<div class="header-contents">
-				<div class="logo"><h1/>Character Manager</div>
+				<div class="logo">Character Manager</div>
 			</div>
 		</header>
 <!--_____________________________________Navigation____________________________________ -->
     <header>
 		<nav class="website-nav">
 			<ul>
-				<li><a class="home-link" href="home.php">Home</a></li>
+				<li><a class="home-link" href="index.php">Home</a></li>
 				<li><a href="character.php">Manage Hero</a></li>
-				<li><a href="index.php">View Item Index</a></li>
+				<li><a href="qlindex.php">View Item Index</a></li>
 			</ul>
 		</nav> 
-		<h1>Welcome <?php 
-			$login_session=$_SESSION['username'];
-			echo $login_session;?>
-		</h1>
 	</header>
 <!--_____________________________________Page Content____________________________________ -->
 		<div class="graphics">
