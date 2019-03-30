@@ -6,7 +6,6 @@
 	<meta name="description" content="Questland Hero Helper App"/>
 	<link href="css/style.css" rel="stylesheet">
 </head>
-
 <body>
 	<div class="wrapper">
 <!--_____________________________________Header____________________________________ -->
@@ -20,7 +19,7 @@
 		<nav class="website-nav">
 			<ul>
 				<li><a class="home-link" href="index.php">Home</a></li>
-				<li><a href="character.php">Manage Hero</a></li>
+				<li><a href="character.php">Hero Manager</a></li>
 				<li><a href="weaponindex.php">Weapon Index</a></li>
 				<li><a href="gearindex.php">Gear Index</a></li>
 				<li><a href="runeindex.php">Orb Index</a></li>
@@ -38,7 +37,7 @@
 			</div>
 		</div>
 
-
+		
 <!--_____________________________________Footer____________________________________ -->
 	<footer>
 		<p class="footer-contents">
