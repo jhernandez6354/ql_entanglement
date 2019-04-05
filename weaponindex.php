@@ -20,7 +20,8 @@
 		<nav class="website-nav">
 			<ul>
 				<li><a class="home-link" href="index.php">Home</a></li>
-				<li><a href="character.php">Hero Manager</a></li>
+				<li><a href="hero.php">Hero Manager</a></li>
+				<li><a href="guild.php">Guild View</a></li>
 				<li><a href="gearindex.php">Gear Index</a></li>
 				<li><a href="runeindex.php">Orb Index</a></li>
 			</ul>

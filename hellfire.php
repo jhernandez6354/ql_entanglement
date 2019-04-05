@@ -8,7 +8,7 @@
 </head>
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>
-<script type="text/javascript" src="hero.js"></script>
+<script type="text/javascript" src="hellfire.js"></script>
 
 <body>
 	<div class="wrapper">
@@ -23,7 +23,7 @@
 		<nav class="website-nav">
 			<ul>
 				<li><a class="home-link" href="index.php">Home</a></li>
-				<li><a href="guild.php">Guild View</a></li>
+                <li><a href="hero.php">Hero Manager</a></li>
 				<li><a href="weaponindex.php">Weapon Index</a></li>
 				<li><a href="gearindex.php">Gear Index</a></li>
 				<li><a href="runeindex.php">Orb Index</a></li>
@@ -37,20 +37,12 @@
 			<input type="text" id="token" name="token"><br>
 			<button id="btn_id" name="btn_id" value="button">Submit</button>
 		</form>
-		<div id="player_name"></div>
-		<div id="player_level"></div>
-		<div id="equip_hero_gear">
-			<div id="e_helm"></div>
-			<div id="e_chest"></div>
-			<div id="e_feet"></div>
-			<div id="e_hand"></div>
-			<div id="e_neck"></div>
-			<div id="e_ring"></div>
-			<div id="e_idol"></div>
-			<div id="e_mh"></div>
-			<div id="e_oh"></div>
-		</div>
-		<table id="player_item_list">
+		<div id="guild_hellfire"></div>
+		<div id="guild_black"></div>
+		<div id="guild_phoenix"></div>
+		<div id="guild_forge"></div>
+		<table id="table">
+			<thead></thead>
 		</table>
 </div>
 </body>
