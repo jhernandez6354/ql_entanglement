@@ -8,7 +8,7 @@ use Aws\Credentials\CredentialProvider; #Used for Production
 $client = DynamoDbClient::factory([
 	'region'  => 'us-east-1',
 	'version' => 'latest',
-	'credentials' => CredentialProvider::env() #Comment out this line to run locally. (You'll need aws creds)
+	#'credentials' => CredentialProvider::env() #Comment out this line to run locally. (You'll need aws creds)
 ]);
 
 $params= [

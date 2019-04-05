@@ -2,7 +2,7 @@
 if(!isset($_SESSION)) 
 { 
 	session_start();
-	$_SESSION['redirect'] = "guild.php";
+	$_SESSION['redirect'] = "hero.php";
 }
 require_once('header.php')
 ?>
@@ -51,14 +51,34 @@ Shadowbox.init({
 		<?php
 			error_reporting(0);
 			$token = $_SESSION['token'];
+			include 's3.php';
 			include 'dynamodb.php';
+			$s3Items = array();
+			$bucket = 'elasticbeanstalk-us-east-1-331694059185';
+			$s3objects = $s3Client->getIterator('ListObjects', array(
+				'Bucket' => $bucket,
+				'Prefix' => 'resources/storage/'
+			));
+			foreach ($s3objects as $object) {
+				$s3Items[] = $object;
+			}
 			$ch=curl_init();
 			$curl_headers=array(
 				"token: $token",
 			);
 			
-			//await fetch(cors_api_url + `http://149.56.27.225/user/getprofile/` + '/?hero_id=' + playerid ,initObject)
-
+			function equipGear($slot,$image,$name) {
+				foreach ($s3Items as $object) {
+					if (strpos($object['Key'], $image) !== false) {
+						$key = $object['Key'];
+						break;
+					}
+				}
+				echo "<div class=\"equip\" id=\"$slot\">";
+				echo "<img src=\"https://s3.amazonaws.com/$bucket/$key\" width=\"50\" height=\"50\"></img>";
+				echo "<p id=\"$slot"."_text\">$name</p>";
+				echo "</div>";
+			}
 			$proxy='https://cors-anywhere.herokuapp.com/';
 			curl_setopt($ch,CURLOPT_URL,'http://149.56.27.225/client/init/');
 			curl_setopt($ch, CURLOPT_HEADER, false);
@@ -103,11 +123,23 @@ Shadowbox.init({
 				if ($items["wear"]){ //Item is gear
 					if($items["wear"][0] == 1){
 						$indexed = "Equip";
+						$image = $value['Items'][0]['prvw']["N"];
 						$name = $value['Items'][0]['n']["S"];
 						$slot = $value['Items'][0]['s']["S"];
 						$quality = $value['Items'][0]['q']["S"];
 						$upgrade = $items["wear"][1];
 						$boost = $items["wear"][2];
+						//equipGear($slot,$image,$name);
+						foreach ($s3Items as $object) {
+							if (strpos($object['Key'], $image) !== false) {
+								$key = $object['Key'];
+								break;
+							}
+						}
+						echo "<div class=\"equip\" id=\"$slot\">";
+						echo "<img src=\"https://s3.amazonaws.com/$bucket/$key\" width=\"50\" height=\"50\"></img>";
+						echo "<p id=\"$slot"."_text\">$name</p>";
+						echo "</div>";
 					} 
 					elseif ($items["wear"][0] == 2) {
 						$indexed = "Collection 1";

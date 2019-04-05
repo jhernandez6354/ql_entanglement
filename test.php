@@ -1,15 +1,7 @@
 <?php
-require __DIR__ . '/vendor/autoload.php'; #Used for local testing
-use Aws\DynamoDb\SessionHandler;
-use Aws\DynamoDb\Exception\DynamoDbException;
-use Aws\DynamoDb\DynamoDbClient;
-use Aws\DynamoDb\Marshaler;
-use Aws\Credentials\CredentialProvider; #Used for Production 
-$client = DynamoDbClient::factory([
-	'region'  => 'us-east-1',
-	'version' => 'latest',
-	#'credentials' => CredentialProvider::env() #Comment out this line to run locally. (You'll need aws creds)
-]);
+include 's3.php';
+include 'dynamodb.php';
+$bucket = 'elasticbeanstalk-us-east-1-331694059185';
     $value = '5317';
     $dbquery = [
         'TableName' => 'ql_dynamo',
@@ -18,5 +10,19 @@ $client = DynamoDbClient::factory([
         'ExpressionAttributeValues'=> array( ':t'  => array('N' => $value))
     ];
     $value = $client->query($dbquery);
-    echo $value['Items'][0]['n']["S"];
+    $objects = $s3Client->getIterator('ListObjects', array(
+        'Bucket' => $bucket,
+        'Prefix' => 'resources/storage/'
+    ));
+    foreach ($objects as $object) {
+        
+        if (strpos($object['Key'], $value['Items'][0]['prvw']["N"]) !== false) {
+            $key = $object['Key'];
+            break;
+        }
+    }
+    
+    echo "<img src=\"https://s3.amazonaws.com/$bucket/$key\" width=\"50\" height=\"50\"></img>";
+    //$headers = $command->getResponse()->getHeaders();
+    //echo $value['Items'][0]['i_hd']["N"];
 ?>
