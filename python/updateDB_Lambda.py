@@ -10,21 +10,28 @@ def lambda_handler(event, context):
     identify_update()
     
 def identify_update():
-    r=requests.get('http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android')
+    r=requests.get('http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android') #use this request to identify if there is an update
     json_data = json.loads(r.text)
     checked_file = json_data['data']['static_data']['crc_details']['item_templates']
     s3Client = boto3.client("s3")
-    response = s3Client.get_object(
+    response = s3Client.get_object( #We are writing this to S3 to watch if something changed.
         Bucket='elasticbeanstalk-us-east-1-331694059185',
         Key='resources/item_templates')
-    file_content = response['Body'].read()
-    currentDB = json.loads(file_content)
-    if (checked_file == currentDB['hash']):
-        download_update
-        
+    crc = json.loads(response['Body'].read().decode('utf-8'))
+    print (checked_file)
+    crc = crc.split('"')[1::2]
+    print(crc[1])
+    if checked_file != crc[1]: #This shit is super important
+        print("Downloading Update")
+        json_data = '{"hash": "' + checked_file + '"}'
+        myfile = requests.get("http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/" + checked_file + "/item_templates/",stream=True)
+        s3Client.put_object( #Make sure to update the current file so that it knows not to update with the same data.
+            Bucket='elasticbeanstalk-us-east-1-331694059185',
+            Key='resources/item_templates',
+            Body=(bytes(json.dumps(json_data).encode('UTF-8'))))
+       
         #First Setup, load the data file into a json dump to be parsed.
-        with open(jsonFile) as myfile:
-            myFile = json.load(myfile)
+        myFile = myfile.json()
         client = boto3.client('dynamodb')
         try:
             client.describe_table(
@@ -39,10 +46,6 @@ def identify_update():
         for index in myFile:
             newIndex = convert_Item(index)
             upload_DynamoDB(table, newIndex['t'], newIndex)
-
-def download_update():
-    print("Downloading Update")
-    #Write the items like 
 
 def validate_Table():
     dynamodb = boto3.resource('dynamodb')
@@ -132,5 +135,4 @@ def convert_Item(index):
                 for key, value in index['loot_chances']['part'].items():
                     index['loot_chances']['part'][key] = str(value)
     return index
-
     
