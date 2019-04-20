@@ -101,8 +101,22 @@ Shadowbox.init({
 				$token = $_SESSION['token'];
 				include 's3.php';
 				include 'dynamodb.php';
+				$set_itemList[] =array();
+				$item_list[] = array();
 				$setList = json_decode(file_get_contents("./wearable_sets"),true);
 				$weaponPassive = json_decode(file_get_contents("./static_passive_skills"),true);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_URL, 'http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android');
+				$current_update = json_decode(curl_exec($ch));
+				$set_itemlist = $current_update->data->static_data->crc_details->item_templates;
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$set_itemlist/item_templates/");
+				$item_list = json_decode(curl_exec($ch));
+				curl_close($ch);
 				$s3Items = array();
 				$bucket = 'elasticbeanstalk-us-east-1-331694059185';
 				$s3objects = $s3Client->getIterator('ListObjects', array(
@@ -136,25 +150,26 @@ Shadowbox.init({
 				echo '<th>Parts</td>';
 				echo "<tr>";
 				foreach($get_hero['data']['items_list'] as $items){
-					$value = $items['a'][1];
-					$dbquery = [
-						'TableName' => 'ql_dynamo',
-						'KeyConditionExpression' => '#tag = :t',
-						'ExpressionAttributeNames'=> [ '#tag' => 't' ],
-						'ExpressionAttributeValues'=> array( ':t'  => array('N' => "$value"))
-					];
-					$value = $client->query($dbquery);
+					$tvalue = $items['a'][1];
+					foreach ($item_list as $key => $item){
+						if (isset($tvalue)){
+							if ($item->t == $tvalue){
+								$ItemKey = $key;
+								break;
+							}
+						}
+					}
 					if (isset($items["wear"])){ //Item is gear
 						if($items["wear"][0] == 1){
 							$indexed = "Equip";
-							$image = $value['Items'][0]['i_sd']["N"];
-							$name = $value['Items'][0]['n']["S"];
-							$slot = ucfirst($value['Items'][0]['s']["S"]);
-							$quality = ucfirst($value['Items'][0]['q']["S"]);
+							$image = $item_list[$ItemKey]->i_sd;
+							$name = $item_list[$ItemKey]->n;
+							$slot = ucfirst($item_list[$ItemKey]->s);
+							$quality = ucfirst($item_list[$ItemKey]->q);
 							if ($quality != "Common"){
 								if ($quality != "Uncommon"){
 									foreach ($setList as $set){
-										if ($value['Items'][0]['set']["N"] == $set[0]) {
+										if ($item_list[$ItemKey]->set == $set[0]) {
 											$element = $set[1];
 										}
 									}
@@ -167,49 +182,76 @@ Shadowbox.init({
 							$boost = $items["wear"][2];
 							$parts = 1;
 							#links
-							if (isset($value['Items'][0]['ceff']["L"][0]["M"])){
+							if (isset($item_list[$ItemKey]->links[0])){
 								$link1 = $items["wear"][3][0];
 								$link2 = $items["wear"][3][1];
 								$link3 = $items["wear"][3][2];
 								$link4 = $items["wear"][3][3];
 								$link5 = $items["wear"][3][4];
-								$db_link1_name =  $value['Items'][0]['ceff']["L"][0]["M"]["n"]["S"];
-								$db_link1_enhance =  ucfirst($value['Items'][0]['ceff']["L"][0]["M"]["e"]["S"]);
-								$db_link1_bonus =  $value['Items'][0]['ceff']["L"][0]["M"]["v"]["N"];
-								$db_link2_name =  $value['Items'][0]['ceff']["L"][1]["M"]["n"]["S"];
-								$db_link2_enhance =  ucfirst($value['Items'][0]['ceff']["L"][1]["M"]["e"]["S"]);
-								$db_link2_bonus =  $value['Items'][0]['ceff']["L"][1]["M"]["v"]["N"];
-								$db_link3_name =  $value['Items'][0]['ceff']["L"][2]["M"]["n"]["S"];
-								$db_link3_enhance =  ucfirst($value['Items'][0]['ceff']["L"][2]["M"]["e"]["S"]);
-								$db_link3_bonus =  $value['Items'][0]['ceff']["L"][2]["M"]["v"]["N"];
-								$db_link4_name =  $value['Items'][0]['ceff']["L"][3]["M"]["n"]["S"];
-								$db_link4_enhance = ucfirst( $value['Items'][0]['ceff']["L"][3]["M"]["e"]["S"]);
-								$db_link4_bonus =  $value['Items'][0]['ceff']["L"][3]["M"]["v"]["N"];
-								$db_link5_name =  $value['Items'][0]['ceff']["L"][4]["M"]["n"]["S"];
-								$db_link5_enhance =  ucfirst($value['Items'][0]['ceff']["L"][4]["M"]["e"]["S"]);
-								$db_link5_bonus =  $value['Items'][0]['ceff']["L"][4]["M"]["v"]["N"];
+								
+								$armor_link_enhance =  ucfirst($item_list[$ItemKey]->links[0]->e);
+								$armor_link_bonus = $item_list[$ItemKey]->links[0]->p;
+								$armor_link1_tag =  $item_list[$ItemKey]->links[0]->i[0][0];
+								$armor_link2_tag =  $item_list[$ItemKey]->links[0]->i[1][0];
+								$armor_link3_tag =  $item_list[$ItemKey]->links[0]->i[2][0];
+								foreach ($item_list as $mykey => $myitem){
+									if (isset($armor_link1_tag)){
+										if ($myitem->t == $armor_link1_tag){
+											$armor_link1_name = $item_list[$mykey]->n;
+										}
+									}
+									if (isset($armor_link2_tag)){
+										if ($myitem->t == $armor_link2_tag){
+											$armor_link2_name = $item_list[$mykey]->n;
+										}
+									}
+									if (isset($armor_link3_tag)){
+										if ($myitem->t == $armor_link3_tag){
+											$armor_link3_name = $item_list[$mykey]->n;
+										}
+									}
+								}
+								$orb_link_enhance =  ucfirst($item_list[$ItemKey]->links[1]->e);
+								$orb_link_bonus = $item_list[$ItemKey]->links[1]->p;
+								
+								$orb_link1_tag =  $item_list[$ItemKey]->links[1]->i[0][0];
+								$orb_link2_tag =  $item_list[$ItemKey]->links[1]->i[1][0];
+								foreach ($item_list as $mykey => $myitem){
+									if (isset($orb_link1_tag)){
+										if ($myitem->t == $orb_link1_tag){
+											$orb_link1_name = $item_list[$mykey]->n;
+										}
+									}
+									if (isset($orb_link1_tag)){
+										if ($myitem->t == $orb_link2_tag){
+											$orb_link2_name = $item_list[$mykey]->n;
+										}
+									}
+								} 
 							}
-							if (isset($value['Items'][0]['pskls']["L"])){
-								$db_passive1_effect = $value['Items'][0]['pskls']["L"][0]["N"];
-								$db_passive2_effect = $value['Items'][0]['pskls']["L"][1]["N"];
+							if (isset($item_list[$ItemKey]->pskls)){
+								$db_passive1_effect = $item_list[$ItemKey]->pskls[0];
+								$db_passive2_effect = $item_list[$ItemKey]->pskls[1];
 							}
 							foreach ($s3Items as $object) {
 								if (strpos($object['Key'], $image) !== false) {
-									$key = $object['Key'];
+									$s3key = $object['Key'];
 									break;
 								}
 							}
 							echo "<div class=\"$slot"."_txt\">$name</div>";
 							echo "<div class=\"$slot\">";
-								echo "<div class=\"equiphover\"><img id=\"$slot"."_img\" src=\"https://s3.amazonaws.com/$bucket/$key\" width=\"50\" height=\"50\"></img>";
+								echo "<div class=\"equiphover\"><img id=\"$slot"."_img\" src=\"https://s3.amazonaws.com/$bucket/$image\" width=\"50\" height=\"50\"></img>";
 								
-								if (isset($value['Items'][0]['ceff']["L"][0]["M"])){
+								if (isset($item_list[$ItemKey]->links[0])){
 									echo "<span class=\"tooltip\">
-										<div class=\"link1\">$db_link1_name: $db_link1_enhance $db_link1_bonus%</div>
-										<div class=\"link2\">$db_link2_name: $db_link2_enhance $db_link2_bonus%</div>
-										<div class=\"link3\">$db_link3_name: $db_link3_enhance $db_link3_bonus%</div>
-										<div class=\"link4\">$db_link4_name: $db_link4_enhance $db_link4_bonus%</div>
-										<div class=\"link5\">$db_link5_name: $db_link5_enhance $db_link5_bonus%</div>
+										<div class=\"a_enhance\">Armor Enhancement: $armor_link_enhance $armor_link_bonus%</div>
+										<div class=\"a_link1\">$armor_link1_name</div>
+										<div class=\"a_link2\">$armor_link2_name</div>
+										<div class=\"a_link3\">$armor_link3_name</div>
+										<div class=\"o_enhance\">Orb Enhancement: $armor_link_enhance $armor_link_bonus%</div>
+										<div class=\"o_link1\">$orb_link1_name</div>
+										<div class=\"o_link2\">$orb_link2_name</div>
 									</span>"
 									;
 								}
@@ -238,13 +280,13 @@ Shadowbox.init({
 						} 
 						elseif ($items["wear"][0] == 2) {
 							$indexed = "Collection 1";
-							$name = $value['Items'][0]['n']["S"];
-							$slot = ucfirst($value['Items'][0]['s']["S"]);
-							$quality = ucfirst($value['Items'][0]['q']["S"]);
+							$name = $item_list[$ItemKey]->n;
+							$slot = ucfirst($item_list[$ItemKey]->s);
+							$quality = ucfirst($item_list[$ItemKey]->q);
 							if ($quality != "Common"){
 								if ($quality != "Uncommon"){
 									foreach ($setList as $set){
-										if ($value['Items'][0]['set']["N"] == $set[0]) {
+										if ($item_list[$ItemKey]->set == $set[0]) {
 											$element = $set[1];
 										}
 									}
@@ -259,13 +301,13 @@ Shadowbox.init({
 						}
 						elseif ($items["wear"][0] == 3) {
 							$indexed = "Collection 2";
-							$name = $value['Items'][0]['n']["S"];
-							$slot = ucfirst($value['Items'][0]['s']["S"]);
-							$quality = ucfirst($value['Items'][0]['q']["S"]);
+							$name = $item_list[$ItemKey]->n;
+							$slot = ucfirst($item_list[$ItemKey]->s);
+							$quality = ucfirst($item_list[$ItemKey]->q);
 							if ($quality != "Common"){
 								if ($quality != "Uncommon"){
 									foreach ($setList as $set){
-										if ($value['Items'][0]['set']["N"] == $set[0]) {
+										if ($item_list[$ItemKey]->set == $set[0]) {
 											$element = $set[1];
 										}
 									}
@@ -279,13 +321,13 @@ Shadowbox.init({
 							$parts = 1;
 						} else {
 							$indexed = "Inventory";
-							$name = $value['Items'][0]['n']["S"];
-							$slot = ucfirst($value['Items'][0]['s']["S"]);
-							$quality = ucfirst($value['Items'][0]['q']["S"]);
+							$name = $item_list[$ItemKey]->n;
+							$slot = ucfirst($item_list[$ItemKey]->s);
+							$quality = ucfirst($item_list[$ItemKey]->q);
 							if ($quality != "Common"){
 								if ($quality != "Uncommon"){
 									foreach ($setList as $set){
-										if ($value['Items'][0]['set']["N"] == $set[0]) {
+										if ($item_list[$ItemKey]->set == $set[0]) {
 											$element = $set[1];
 										}
 									}
@@ -301,34 +343,34 @@ Shadowbox.init({
 					} elseif (isset($items["orb"])){ //Item is an orb
 						if ($items["orb"][0] != null) {
 							$indexed = "Orb";
-							$name = $value['Items'][0]['n']["S"];
+							$name = $item_list[$ItemKey]->n;
 							$element = "NA";
 							$slot = ucfirst($items["orb"][0]);
-							$quality = ucfirst($value['Items'][0]['q']["S"]);
+							$quality = ucfirst($item_list[$ItemKey]->q);
 							$upgrade = $items["orb"][1];
 							$boost = $items["orb"][2];
 							$parts = 1;
 						}else {
 							$indexed = "Orb";
-							$name = $value['Items'][0]['n']["S"];
+							$name = $item_list[$ItemKey]->n;
 							$element = "NA";
-							$slot = ucfirst($value['Items'][0]['s']["S"]);
-							$quality = ucfirst($value['Items'][0]['q']["S"]);
+							$slot = ucfirst($item_list[$ItemKey]->s);
+							$quality = ucfirst($item_list[$ItemKey]->q);
 							$upgrade = $items["orb"][1];
 							$boost = $items["orb"][2];
 							$parts = 1;
 						}
 					} else {
-						if ($value['Items'][0]['s']["S"] == "exactshard") {
+						if ($item_list[$ItemKey]->s == "exactshard") {
 							$indexed = "Parts";
-							$name = $value['Items'][0]['n']["S"];
-							$slot = ucfirst($value['Items'][0]['s']["S"]);
-							$quality = ucfirst($value['Items'][0]['q']["S"]);
+							$name = $item_list[$ItemKey]->n;
+							$slot = ucfirst($item_list[$ItemKey]->s);
+							$quality = ucfirst($item_list[$ItemKey]->q);
 							$upgrade = 0;
 							$boost = 0;
 							$parts = number_format($items['a'][5]);
 							foreach ($setList as $set){
-								if ($value['Items'][0]['set']["N"] == $set[0]) {
+								if ($item_list[$ItemKey]->set == $set[0]) {
 									$element = $set[1];
 								}
 							}
@@ -337,10 +379,10 @@ Shadowbox.init({
 							}
 						} else {
 							$indexed = "Special";
-							$name = $value['Items'][0]['n']["S"];
+							$name = $item_list[$ItemKey]->n;
 							$element = "NA";
-							$slot = ucfirst($value['Items'][0]['s']["S"]);
-							$quality = ucfirst($value['Items'][0]['q']["S"]);
+							$slot = ucfirst($item_list[$ItemKey]->s);
+							$quality = ucfirst($item_list[$ItemKey]->q);
 							$upgrade = 0;
 							$boost = 0;
 							$parts = number_format($items['a'][5]);

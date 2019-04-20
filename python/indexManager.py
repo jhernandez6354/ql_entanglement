@@ -79,6 +79,12 @@ def convert_Item(index):
     #Remove blank string values from d property.
     if index['d'] == '':
         index['d'] = 'Null'
+    if 'ceff' in index:
+        i=0
+        for value in index['ceff']:
+            if index['ceff'][i]['n'] == '':
+                index['ceff'][i]['n'] = 'Null'
+                i+=1
     if 'banner' in index:
         if index['banner']['c'] == '':
             index['banner']['c'] = 'Null'

@@ -23,7 +23,7 @@ def identify_update():
     print(crc[1])
     if checked_file != crc[1]: #This shit is super important
         print("Downloading Update")
-        json_data = '{"hash": "' + checked_file + '"}'
+        json_data = '{"hash": "' +  checked_file + '"}'
         myfile = requests.get("http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/" + checked_file + "/item_templates/",stream=True)
         s3Client.put_object( #Make sure to update the current file so that it knows not to update with the same data.
             Bucket='elasticbeanstalk-us-east-1-331694059185',
@@ -120,6 +120,12 @@ def convert_Item(index):
     #Remove blank string values from d property.
     if index['d'] == '':
         index['d'] = 'Null'
+    if 'ceff' in index:
+        i=0
+        for value in index['ceff']:
+            if index['ceff'][i]['n'] == '':
+                index['ceff'][i]['n'] = 'Null'
+                i+=1
     if 'banner' in index:
         if index['banner']['c'] == '':
             index['banner']['c'] = 'Null'

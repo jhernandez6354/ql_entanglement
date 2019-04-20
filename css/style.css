@@ -1062,7 +1062,7 @@
 	grid-column: 2;
 	grid-row: 4;
   }
-  .main_hand {
+  .Main_hand {
 	grid-column: 2;
 	grid-row: 5;
   }
@@ -1082,7 +1082,7 @@
 	grid-column: 4;
 	grid-row: 4;
   }
-  .off_hand {
+  .Off_hand {
 	grid-column: 4;
 	grid-row: 5;
   }
@@ -1102,7 +1102,7 @@
 	grid-column: 1;
 	grid-row: 4;
   }
-  .main_hand_txt {
+  .Main_hand_txt {
 	grid-column: 1;
 	grid-row: 5;
   }
@@ -1122,7 +1122,7 @@
 	grid-column: 3;
 	grid-row: 4;
   }
-  .off_hand_txt {
+  .Off_hand_txt {
 	grid-column: 3;
 	grid-row: 5;
   }

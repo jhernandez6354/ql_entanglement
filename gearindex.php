@@ -53,10 +53,26 @@ Shadowbox.init({
 	<div class="hero" class="container">
 <?php
 include 'dynamodb.php';
+$set_itemList[] =array();
+$item_list[] = array();
 $setList = json_decode(file_get_contents("./wearable_sets"),true);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL, 'http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android');
+$current_update = json_decode(curl_exec($ch));
+$set_itemlist = $current_update->data->static_data->crc_details->item_templates;
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$set_itemlist/item_templates/");
+$item_list = json_decode(curl_exec($ch));
+curl_close($ch);
+
 try {
 	while (true){
 		$result = $client->scan($params);
+		$array_Result[] = $result['Items'];
 		echo '<table class="sortable" style="width:500px">';
 		echo "<tr>";
 		echo '<th>Item Name</td>';
@@ -65,28 +81,22 @@ try {
 		echo '<th>Slot</td>';
 		echo '<th>Potential</td>';
 		echo '<th>Health</td>';
-		echo '<th>HP Bonus</td>';
+		echo '<th>HP Boost</td>';
 		echo '<th>Attack</td>';
-		echo '<th>Dmg Bonus</td>';
+		echo '<th>Dmg Boost</td>';
 		echo '<th>Defense</td>';
-		echo '<th>Def Bonus</td>';
+		echo '<th>Def Boost</td>';
 		echo '<th>Magic</td>';
-		echo '<th>Magic Bonus</td>';
+		echo '<th>Magic Boost</td>';
+		echo '<th>Armor Bonus Stat</td>';
+		echo '<th>Armor Bonus %</td>';
 		echo '<th>Armor Link 1</td>';
-		echo '<th>Link 1 Bonus Stat</td>';
-		echo '<th>Link 1 Bonus %</td>';
 		echo '<th>Armor Link 2</td>';
-		echo '<th>Link 2 Bonus Stat</td>';
-		echo '<th>Link 2 Bonus %</td>';
 		echo '<th>Armor Link 3</td>';
-		echo '<th>Link 3 Bonus Stat</td>';
-		echo '<th>Link 3 Bonus %</td>';
+		echo '<th>Orb Bonus Stat</td>';
+		echo '<th>Orb Bonus %</td>';
 		echo '<th>Orb Link 1</td>';
-		echo '<th>Orb 1 Bonus Stat</td>';
-		echo '<th>Orb 1 Bonus %</td>';
 		echo '<th>Orb Link 2</td>';
-		echo '<th>Orb 2 Bonus Stat</td>';
-		echo '<th>Orb 2 Bonus #</td>';
 		echo "</tr>";
 		foreach ($result['Items'] as $value) {
 			if (!empty($value['stats']['M']['def']['L'])){
@@ -120,67 +130,96 @@ try {
 							echo '<td>',$value['stats']['M']['def']['L'][1]['N'].'</td>';
 							echo '<td>',$value['stats']['M']['magic']['L'][0]['N'].'</td>';
 							echo '<td>',$value['stats']['M']['magic']['L'][1]['N'].'</td>';
-							if (!empty($value['ceff']['L'][0]['M'])){
-								$alink1 = $value['ceff']['L'][0]['M']['n']['S'];
-								$blink1 = $value['ceff']['L'][0]['M']['e']['S'];
-								$clink1 = $value['ceff']['L'][0]['M']['v']['N'];
+							if (!empty($value['links']['L'][0]['M'])){
+								$aenhance = $value['links']['L'][0]['M']['e']['S'];
+								$aenhance_per = $value['links']['L'][0]['M']['p']['N'];
+								if (isset($value['links']['L'][0]['M']['i']['L'][0]['L'])){
+									$alink1_tag = $value['links']['L'][0]['M']['i']['L'][0]['L'][0]['N'];
+								}
+								if (isset($value['links']['L'][0]['M']['i']['L'][1]['L'])){
+									$alink2_tag = $value['links']['L'][0]['M']['i']['L'][1]['L'][0]['N'];
+								}
+								if (isset($value['links']['L'][0]['M']['i']['L'][2]['L'])){
+									$alink3_tag = $value['links']['L'][0]['M']['i']['L'][2]['L'][0]['N'];
+								}
+								foreach ($item_list as $key => $item){
+									if (isset($alink1_tag)){
+										if ($item->t == $alink1_tag){
+											$alink1 = $item_list[$key]->n;
+										}
+									}
+									if (isset($alink2_tag)){
+										if ($item->t == $alink2_tag){
+											$alink2 = $item_list[$key]->n;
+										}
+									}
+									if (isset($alink3_tag)){
+										if ($item->t == $alink3_tag){
+											$alink3 = $item_list[$key]->n;
+										}
+									}
+								} 
+								if (!isset($alink1)){
+									$alink1 = "";
+								}
+								if (!isset($alink2)){
+									$alink1 = "";
+								}
+								if (!isset($alink3)){
+									$alink1 = "";
+								}
 							} else {
+								$aenhance = "";
+								$aenhance_per = "";
 								$alink1 = "";
-								$blink1 = "";
-								$clink1 = "";
-							}
-							if (!empty($value['ceff']['L'][1]['M'])){
-								$alink2 = $value['ceff']['L'][1]['M']['n']['S'];
-								$blink2 = $value['ceff']['L'][1]['M']['e']['S'];
-								$clink2 = $value['ceff']['L'][1]['M']['v']['N'];
-							} else {
 								$alink2 = "";
-								$blink2 = "";
-								$clink2 = "";
-							}
-							if (!empty($value['ceff']['L'][2]['M'])){
-								$alink3 = $value['ceff']['L'][2]['M']['n']['S'];
-								$blink3 = $value['ceff']['L'][2]['M']['e']['S'];
-								$clink3 = $value['ceff']['L'][2]['M']['v']['N'];
-							} else {
 								$alink3 = "";
-								$blink3 = "";
-								$clink3 = "";
 							}
-							if (!empty($value['ceff']['L'][3]['M'])){
-								$alink4 = $value['ceff']['L'][3]['M']['n']['S'];
-								$blink4 = $value['ceff']['L'][3]['M']['e']['S'];
-								$clink4 = $value['ceff']['L'][3]['M']['v']['N'];
+							if (!empty($value['links']['L'][1]['M'])){
+								$renhance = $value['links']['L'][1]['M']['e']['S'];
+								$renhance_per = $value['links']['L'][1]['M']['p']['N'];
+								if (isset($value['links']['L'][1]['M']['i']['L'][0]['L'])){
+									$rlink1_tag = $value['links']['L'][1]['M']['i']['L'][0]['L'][0]['N'];
+								}
+								if (isset($value['links']['L'][1]['M']['i']['L'][1]['L'])){
+									$rlink2_tag = $value['links']['L'][1]['M']['i']['L'][1]['L'][0]['N'];
+								}
+								foreach ($item_list as $key => $item){
+									if (isset($rlink1_tag)){
+										if ($item->t == $rlink1_tag){
+											$rlink1 = $item_list[$key]->n;
+										}
+									}
+									if (isset($rlink2_tag)){
+										if ($item->t == $rlink2_tag){
+											$rlink2 = $item_list[$key]->n;
+										}
+									}
+								}
+								if (!isset($alink1)){
+									$alink1 = "";
+								}
+								if (!isset($alink2)){
+									$alink1 = "";
+								}
 							} else {
-								$alink4 = "";
-								$blink4 = "";
-								$clink4 = "";
+								$renhance = "";
+								$renhance_per = "";
+								$rlink1 = "";
+								$rlink2 = "";
 							}
-							if (!empty($value['ceff']['L'][4]['M'])){
-								$alink5 = $value['ceff']['L'][4]['M']['n']['S'];
-								$blink5 = $value['ceff']['L'][4]['M']['e']['S'];
-								$clink5 = $value['ceff']['L'][4]['M']['v']['N'];
-							} else {
-								$alink5 = "";
-								$blink5 = "";
-								$clink5 = "";
-							}
+							echo '<td>',$aenhance.'</td>';
+							echo '<td>',$aenhance_per.'</td>';
 							echo '<td>',$alink1.'</td>';
-							echo '<td>',$blink1.'</td>';
-							echo '<td>',$clink1.'</td>';
 							echo '<td>',$alink2.'</td>';
-							echo '<td>',$blink2.'</td>';
-							echo '<td>',$clink2.'</td>';
 							echo '<td>',$alink3.'</td>';
-							echo '<td>',$blink3.'</td>';
-							echo '<td>',$clink3.'</td>';
-							echo '<td>',$alink4.'</td>';
-							echo '<td>',$blink4.'</td>';
-							echo '<td>',$clink4.'</td>';
-							echo '<td>',$alink5.'</td>';
-							echo '<td>',$blink5.'</td>';
-							echo '<td>',$clink5.'</td>';
+							echo '<td>',$renhance.'</td>';
+							echo '<td>',$renhance_per.'</td>';
+							echo '<td>',$rlink1.'</td>';
+							echo '<td>',$rlink2.'</td>';
 							echo "</tr>";
+							$test = array_search($alink1_tag,$result['Items']);
+							echo $test;
 						}
 					}
 				}
@@ -197,6 +236,7 @@ try {
     echo "Unable to scan:\n";
     echo $e->getMessage() . "\n";
 }
+
 ?>
 	</div>
 	</div>

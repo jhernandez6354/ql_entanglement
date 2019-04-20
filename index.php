@@ -57,6 +57,8 @@ Shadowbox.init({
 			</div>
 			<br><br>
 			<div class="descriptionText">
+			<h1><p id="imgAlbum">Version: 0.2.0</p></h1>
+				<p id="imgTag">Updated gear links for Swords and Spirit Update and fixed speed issues for hero page.</p>
 			<h1><p id="imgAlbum">Version: 0.1.1</p></h1>
 				<p id="imgTag">Revised Website layout and added Mobile styling</p>
 			<h1><p id="imgAlbum">Version: 0.1.0</p></h1>
