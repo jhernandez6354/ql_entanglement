@@ -5,7 +5,7 @@
 	<title>Questland Hero Manager</title>
 	<meta name="description" content="Questland Home Page"/>
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:700italic,400,300,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="src/style.css" />
+	<link rel="stylesheet" href="css/style.css" />
 </head>
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>

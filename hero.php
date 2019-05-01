@@ -14,6 +14,7 @@ require_once('header.php')
 	<meta name="description" content="Questland Hero Manager"/>
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:700italic,400,300,700' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/style-desktop.css" />
 </head>
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>

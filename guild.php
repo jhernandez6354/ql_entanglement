@@ -14,6 +14,7 @@ require_once('header.php')
 	<meta name="description" content="Questland Hero Manager"/>
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:700italic,400,300,700' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/style-desktop.css" />
 </head>
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>
@@ -39,11 +40,11 @@ Shadowbox.init({
 		<nav id="nav">
 			<ul>
 				<li class="active" ><a href="index.php">Home</a></li>
-                <li><a href="hero.php">Hero Manager</a></li>
+                <li><a href="hero.php">Hero</a></li>
 				<li><a href="optimize.php">Optimize</a></li>
-				<li><a href="weaponindex.php">Weapon Index</a></li>
-				<li><a href="gearindex.php">Gear Index</a></li>
-				<li><a href="runeindex.php">Orb Index</a></li>
+				<li><a href="weaponindex.php">Weapons</a></li>
+				<li><a href="gearindex.php">Gear</a></li>
+				<li><a href="runeindex.php">Orbs</a></li>
 			</ul>
 		</nav> 
 	</div>
