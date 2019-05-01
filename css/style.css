@@ -1,13 +1,112 @@
-/*
-	Ex Machina by TEMPLATED
-    templated.co @templatedco
-    Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
-*/
 
 @charset 'UTF-8';
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block;}body{line-height:1;}ol,ul{list-style:none;}blockquote,q{quotes:none;}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}table{border-collapse:collapse;border-spacing:0;}body{-webkit-text-size-adjust:none}
+
+
 
 @font-face{font-family:'FontAwesome';src:url('font/fontawesome-webfont.eot?v=4.0.1');src:url('font/fontawesome-webfont.eot?#iefix&v=4.0.1') format('embedded-opentype'),url('font/fontawesome-webfont.woff?v=4.0.1') format('woff'),url('font/fontawesome-webfont.ttf?v=4.0.1') format('truetype'),url('font/fontawesome-webfont.svg?v=4.0.1#fontawesomeregular') format('svg');font-weight:normal;font-style:normal}
-
+@media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ }
+@media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ }
+@media (min-width:641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ }
+@media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ }
+@media (min-width:1025px) { /*********************************************************************************/
+	/* Banner                                                                        */
+	/*********************************************************************************/
+	
+		#banner
+		{
+			padding: 6em 0em;
+		}
+	
+		.homepage #banner
+		{
+			padding: 12em 0em;
+		}
+		
+	/*********************************************************************************/
+	/* Main                                                                          */
+	/*********************************************************************************/
+	
+		#page
+		{
+			padding: 2em 0em 6em 0em;
+		}
+		
+		.homepage #page
+		{
+			padding: 6em 0em;
+		}
+	
+		#main
+		{
+			margin-top: 3em;
+			padding-top: 2em;
+			border-top: none;
+		}
+		
+		.homepage #main
+		{
+			margin-top: 6em;
+			padding-top: 6em;
+		}
+	
+	/*********************************************************************************/
+	/* Footer                                                                        */
+	/*********************************************************************************/
+		
+		#footer
+		{
+			padding: 0em 0em 4em 0em;
+		}}
+@media (min-width:1281px) { /*********************************************************************************/
+	/* Banner                                                                        */
+	/*********************************************************************************/
+	
+		#banner
+		{
+			padding: 6em 0em;
+		}
+	
+		.homepage #banner
+		{
+			padding: 12em 0em;
+		}
+		
+	/*********************************************************************************/
+	/* Main                                                                          */
+	/*********************************************************************************/
+	
+		#page
+		{
+			padding: 2em 0em 6em 0em;
+		}
+		
+		.homepage #page
+		{
+			padding: 6em 0em;
+		}
+	
+		#main
+		{
+			margin-top: 3em;
+			padding-top: 2em;
+			border-top: none;
+		}
+		
+		.homepage #main
+		{
+			margin-top: 6em;
+			padding-top: 6em;
+		}
+	
+	/*********************************************************************************/
+	/* Footer                                                                        */
+	/*********************************************************************************/
+		
+		#footer
+		{
+			padding: 0em 0em 4em 0em;
+		} }
 /*********************************************************************************/
 /* Basic                                                                         */
 /*********************************************************************************/
@@ -1129,6 +1228,381 @@
   .sortable {
 	grid-column: 1 / 4;
 	grid-row: 6;
+	}
+	
+/*********************************************************************************/
+/* Optimized Grid View                                                            */
+/*********************************************************************************/  
+
+.opti_grid {
+	display: grid;
+	grid-template-columns: repeat(3, 300px);
+	grid-auto-flow: row;
+	width:100%;
+	grid-template-columns: 300px 300px 300px;
+  }
+
+	.t_title {
+		grid-column: 1;
+		grid-row: 1;
+		text-align: center;
+		background-color: rgb(42, 38, 38);
+		color:#f6f0f0;
+	}
+  .t_helm_equip {
+	grid-column: 1;
+	grid-row: 2;
+  }
+  .t_chest_equip { 
+	grid-column: 1;
+	grid-row: 3;
+  }
+  .t_glove_equip {
+	grid-column: 1;
+	grid-row: 4;
+  }
+  .t_feet_equip {
+	grid-column: 1;
+	grid-row: 5;
+  }
+  .t_neck_equip {
+	grid-column: 1;
+	grid-row: 6;
+  }
+  .t_ring_equip {
+	grid-column: 1;
+	grid-row: 7;
+  }
+  .t_talisman_equip {
+	grid-column: 1;
+	grid-row: 8;
+	}
+	.w_title {
+		grid-column: 2;
+		grid-row: 1;
+		text-align: center;
+		background-color: rgb(42, 38, 38);
+		color:#f6f0f0;
+	}
+  .w_helm_equip {
+	grid-column: 2;
+	grid-row: 2;
+  }
+  .w_chest_equip { 
+	grid-column: 2;
+	grid-row: 3;
+  }
+  .w_glove_equip {
+	grid-column: 2;
+	grid-row: 4;
+  }
+  .w_feet_equip {
+	grid-column: 2;
+	grid-row: 5;
+  }
+  .w_neck_equip {
+	grid-column: 2;
+	grid-row: 6;
+  }
+  .w_ring_equip {
+	grid-column: 2;
+	grid-row: 7;
+  }
+  .w_talisman_equip {
+	grid-column: 2;
+	grid-row: 8;
+  }
+  .m_title {
+		grid-column: 3;
+		grid-row: 1;
+		text-align: center;
+		background-color: rgb(42, 38, 38);
+		color:#f6f0f0;
+	}
+  .m_helm_equip {
+	grid-column: 3;
+	grid-row: 2;
+  }
+  .m_chest_equip { 
+	grid-column: 3;
+	grid-row: 3;
+  }
+  .m_glove_equip {
+	grid-column: 3;
+	grid-row: 4;
+  }
+  .m_feet_equip {
+	grid-column: 3;
+	grid-row: 5;
+  }
+  .m_neck_equip {
+	grid-column: 3;
+	grid-row: 6;
+  }
+  .m_ring_equip {
+	grid-column: 3;
+	grid-row: 7;
+  }
+  .m_talisman_equip {
+	grid-column: 3;
+	grid-row: 8;
+  }
+
+/*Collections*/
+  /*Tank*/
+  .t_col1 {
+	grid-column: 1;
+	grid-row: 10;
+  }
+  .t_col1_m1 {
+	grid-column: 1;
+	grid-row: 11;
+  }
+  .t_col1_m2 {
+	grid-column: 1;
+	grid-row: 12;
+  }
+  .t_col1_m3 {
+	grid-column: 1;
+	grid-row: 13;
+  }
+  .t_col2_m1 {
+	grid-column: 1;
+	grid-row: 22;
+  }
+  .t_col2_m2 {
+	grid-column: 1;
+	grid-row: 23;
+  }
+  .t_col1_dmg1 {
+	grid-column: 1;
+	grid-row: 19;
+  }
+  .t_col1_dmg2 {
+	grid-column: 1;
+	grid-row: 20;
+  }
+  .t_col2_dmg1 {
+	grid-column: 1;
+	grid-row: 24;
+  }
+  .t_col2_dmg2 {
+	grid-column: 1;
+	grid-row: 25;
+  }
+  .t_col2_dmg3 {
+	grid-column: 1;
+	grid-row: 26;
+  }
+  .t_col1_hp1 {
+	grid-column: 1;
+	grid-row: 14;
+  }
+  .t_col1_hp2 {
+	grid-column: 1;
+	grid-row: 15;
+  }
+  .t_col1_hp3 {
+	grid-column: 1;
+	grid-row: 16;
+  }
+  .t_col2_hp1 {
+	grid-column: 1;
+	grid-row: 27;
+  }
+  .t_col2_hp2 {
+	grid-column: 1;
+	grid-row: 28;
+  }
+  .t_col1_def1 {
+	grid-column: 1;
+	grid-row: 17;
+  }
+  .t_col1_def2 {
+	grid-column: 1;
+	grid-row: 18;
+  }
+  .t_col2_def1 {
+	grid-column: 1;
+	grid-row: 29;
+  }
+  .t_col2_def2 {
+	grid-column: 1;
+	grid-row: 30;
+  }
+  .t_col2_def3 {
+	grid-column: 1;
+	grid-row: 31;
+  }
+  /*warrior*/
+  .w_col1 {
+	grid-column: 2;
+	grid-row: 10;
+  }
+  .w_col1_m1 {
+	grid-column: 2;
+	grid-row: 11;
+  }
+  .w_col1_m2 {
+	grid-column: 2;
+	grid-row: 12;
+  }
+  .w_col1_m3 {
+	grid-column: 2;
+	grid-row: 13;
+  }
+  .w_col2_m1 {
+	grid-column: 2;
+	grid-row: 22;
+  }
+  .w_col2_m2 {
+	grid-column: 2;
+	grid-row: 23;
+  }
+  .w_col1_dmg1 {
+	grid-column: 2;
+	grid-row: 19;
+  }
+  .w_col1_dmg2 {
+	grid-column: 2;
+	grid-row: 20;
+  }
+  .w_col2_dmg1 {
+	grid-column: 2;
+	grid-row: 24;
+  }
+  .w_col2_dmg2 {
+	grid-column: 2;
+	grid-row: 25;
+  }
+  .w_col2_dmg3 {
+	grid-column: 2;
+	grid-row: 26;
+  }
+  .w_col1_hp1 {
+	grid-column: 2;
+	grid-row: 14;
+  }
+  .w_col1_hp2 {
+	grid-column: 2;
+	grid-row: 15;
+  }
+  .w_col1_hp3 {
+	grid-column: 2;
+	grid-row: 16;
+  }
+  .w_col2_hp1 {
+	grid-column: 2;
+	grid-row: 27;
+  }
+  .w_col2_hp2 {
+	grid-column: 2;
+	grid-row: 28;
+  }
+  .w_col1_def1 {
+	grid-column: 2;
+	grid-row: 17;
+  }
+  .w_col1_def2 {
+	grid-column: 2;
+	grid-row: 18;
+  }
+  .w_col2_def1 {
+	grid-column: 2;
+	grid-row: 29;
+  }
+  .w_col2_def2 {
+	grid-column: 2;
+	grid-row: 30;
+  }
+  .w_col2_def3 {
+	grid-column: 2;
+	grid-row: 31;
+  }
+  /*mage*/
+  .m_col1 {
+	grid-column: 3;
+	grid-row: 10;
+  }
+  .m_col1_m1 {
+	grid-column: 3;
+	grid-row: 11;
+  }
+  .m_col1_m2 {
+	grid-column: 3;
+	grid-row: 12;
+  }
+  .m_col1_m3 {
+	grid-column: 3;
+	grid-row: 13;
+  }
+  .m_col2_m1 {
+	grid-column: 3;
+	grid-row: 22;
+  }
+  .m_col2_m2 {
+	grid-column: 3;
+	grid-row: 23;
+  }
+  .m_col1_dmg1 {
+	grid-column: 3;
+	grid-row: 19;
+  }
+  .m_col1_dmg2 {
+	grid-column: 3;
+	grid-row: 20;
+  }
+  .m_col2_dmg1 {
+	grid-column: 3;
+	grid-row: 24;
+  }
+  .m_col2_dmg2 {
+	grid-column: 3;
+	grid-row: 25;
+  }
+  .m_col2_dmg3 {
+	grid-column: 3;
+	grid-row: 26;
+  }
+  .m_col1_hp1 {
+	grid-column: 3;
+	grid-row: 14;
+  }
+  .m_col1_hp2 {
+	grid-column: 3;
+	grid-row: 15;
+  }
+  .m_col1_hp3 {
+	grid-column: 3;
+	grid-row: 16;
+  }
+  .m_col2_hp1 {
+	grid-column: 3;
+	grid-row: 27;
+  }
+  .m_col2_hp2 {
+	grid-column: 3;
+	grid-row: 28;
+  }
+  .m_col1_def1 {
+	grid-column: 3;
+	grid-row: 17;
+  }
+  .m_col1_def2 {
+	grid-column: 3;
+	grid-row: 18;
+  }
+  .m_col2_def1 {
+	grid-column: 3;
+	grid-row: 29;
+  }
+  .m_col2_def2 {
+	grid-column: 3;
+	grid-row: 30;
+  }
+  .m_col2_def3 {
+	grid-column: 3;
+	grid-row: 31;
   }
 /*********************************************************************************/
 /* Item Tables		                                                             */

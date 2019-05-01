@@ -8,7 +8,7 @@ $s3Client = S3Client::factory(array(
     'version' => 'latest',
     'Bucket' => 'elasticbeanstalk-us-east-1-331694059185',
     'Prefix' => 'resources/storage/',
-	#'credentials' => CredentialProvider::env() #Comment out this line to run locally. (You'll need aws creds)
+	'credentials' => CredentialProvider::env() #Comment out this line to run locally. (You'll need aws creds)
 ));
 $s3Client->registerStreamWrapper();
 ?>

@@ -5,15 +5,7 @@
 	<title>Questland Hero Manager</title>
 	<meta name="description" content="Questland Weapon Index"/>
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:700italic,400,300,700' rel='stylesheet' type='text/css'>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script src="jquery/skel.min.js"></script>
-	<script src="jquery/skel-panels.min.js"></script>
-	<script src="jquery/init.js"></script>
-	<noscript>
-		<link rel="stylesheet" href="src/skel-noscript.css" />
-		<link rel="stylesheet" href="src/style.css" />
-		<link rel="stylesheet" href="src/style-desktop.css" />
-	</noscript>
+	<link rel="stylesheet" href="css/style.css" />
 </head>
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>
@@ -40,6 +32,7 @@ Shadowbox.init({
 			<ul>
 				<li class="active" ><a href="index.php">Home</a></li>
 				<li><a href="hero.php">Hero</a></li>
+				<li><a href="optimize.php">Optimize</a></li>
                 <li><a href="guild.php">Guild</a></li>
 				<li><a href="optimize.php">Optimize</a></li>
 				<li><a href="gearindex.php">Armor</a></li>

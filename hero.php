@@ -13,15 +13,7 @@ require_once('header.php')
 	<title>Questland Hero Manager</title>
 	<meta name="description" content="Questland Hero Manager"/>
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:700italic,400,300,700' rel='stylesheet' type='text/css'>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script src="jquery/skel.min.js"></script>
-	<script src="jquery/skel-panels.min.js"></script>
-	<script src="jquery/init.js"></script>
-	<noscript>
-		<link rel="stylesheet" href="src/skel-noscript.css" />
-		<link rel="stylesheet" href="src/style.css" />
-		<link rel="stylesheet" href="src/style-desktop.css" />
-	</noscript>
+	<link rel="stylesheet" href="css/style.css" />
 </head>
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>
@@ -67,7 +59,6 @@ Shadowbox.init({
 			$curl_headers=array(
 				"token: $token",
 			);
-			$proxy='https://cors-anywhere.herokuapp.com/';
 			curl_setopt($ch,CURLOPT_URL,'http://149.56.27.225/client/init/');
 			curl_setopt($ch, CURLOPT_HEADER, false);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
@@ -150,6 +141,11 @@ Shadowbox.init({
 				echo '<th>Parts</td>';
 				echo "<tr>";
 				foreach($get_hero['data']['items_list'] as $items){
+					$element=null;
+					$name=null;
+					$slot=null;
+					$quality=null;
+					$indexed=null;
 					$tvalue = $items['a'][1];
 					foreach ($item_list as $key => $item){
 						if (isset($tvalue)){
@@ -222,7 +218,7 @@ Shadowbox.init({
 											$orb_link1_name = $item_list[$mykey]->n;
 										}
 									}
-									if (isset($orb_link1_tag)){
+									if (isset($orb_link2_tag)){
 										if ($myitem->t == $orb_link2_tag){
 											$orb_link2_name = $item_list[$mykey]->n;
 										}
@@ -234,14 +230,14 @@ Shadowbox.init({
 								$db_passive2_effect = $item_list[$ItemKey]->pskls[1];
 							}
 							foreach ($s3Items as $object) {
-								if (strpos($object['Key'], $image) !== false) {
+								if (strpos($object['Key'], strval($image)) !== false) {
 									$s3key = $object['Key'];
 									break;
 								}
 							}
 							echo "<div class=\"$slot"."_txt\">$name</div>";
 							echo "<div class=\"$slot\">";
-								echo "<div class=\"equiphover\"><img id=\"$slot"."_img\" src=\"https://s3.amazonaws.com/$bucket/$image\" width=\"50\" height=\"50\"></img>";
+								echo "<div class=\"equiphover\"><img id=\"$slot"."_img\" src=\"https://s3.amazonaws.com/$bucket/$s3key\" width=\"50\" height=\"50\"></img>";
 								
 								if (isset($item_list[$ItemKey]->links[0])){
 									echo "<span class=\"tooltip\">
@@ -363,20 +359,27 @@ Shadowbox.init({
 					} else {
 						if ($item_list[$ItemKey]->s == "exactshard") {
 							$indexed = "Parts";
+							$shardIndex = $item_list[$ItemKey]->ritem[0];
+							foreach ($item_list as $mykey => $myitem){
+								if ($myitem->t == $shardIndex){
+									$slot = ucfirst($item_list[$mykey]->s);
+									foreach ($setList as $set){
+										if ($item_list[$mykey]->set == $set[0]) {
+											$element = $set[1];
+										}
+									}
+									if (!isset($element)) {
+										$element = "NA";
+									}
+								}
+							}
 							$name = $item_list[$ItemKey]->n;
-							$slot = ucfirst($item_list[$ItemKey]->s);
+							
 							$quality = ucfirst($item_list[$ItemKey]->q);
 							$upgrade = 0;
 							$boost = 0;
 							$parts = number_format($items['a'][5]);
-							foreach ($setList as $set){
-								if ($item_list[$ItemKey]->set == $set[0]) {
-									$element = $set[1];
-								}
-							}
-							if (!isset($element)) {
-								$element = "NA";
-							}
+							
 						} else {
 							$indexed = "Special";
 							$name = $item_list[$ItemKey]->n;

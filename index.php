@@ -5,15 +5,7 @@
 	<title>Questland Hero Manager</title>
 	<meta name="description" content="Questland Home Page"/>
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:700italic,400,300,700' rel='stylesheet' type='text/css'>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script src="jquery/skel.min.js"></script>
-	<script src="jquery/skel-panels.min.js"></script>
-	<script src="jquery/init.js"></script>
-	<noscript>
-		<link rel="stylesheet" href="src/skel-noscript.css" />
-		<link rel="stylesheet" href="src/style.css" />
-		<link rel="stylesheet" href="src/style-desktop.css" />
-	</noscript>
+	<link rel="stylesheet" href="src/style.css" />
 </head>
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>
@@ -57,6 +49,8 @@ Shadowbox.init({
 			</div>
 			<br><br>
 			<div class="descriptionText">
+			<h1><p id="imgAlbum">Version: 0.2.2</p></h1>
+				<p id="imgTag">Fixed issue with Parts not getting associated with Elements.</p>
 			<h1><p id="imgAlbum">Version: 0.2.0</p></h1>
 				<p id="imgTag">Updated gear links for Swords and Spirit Update and fixed speed issues for hero page.</p>
 			<h1><p id="imgAlbum">Version: 0.1.1</p></h1>
