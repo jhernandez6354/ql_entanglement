@@ -44,11 +44,38 @@ Shadowbox.init({
 <!--_____________________________________Page Content____________________________________ -->
 <div id="page">
 	<div class="hero" class="container">
-			<br><br>
-				<p>What's New:</p>
-			</div>
-			<br><br>
+			<br>
+			<h1>How To:</h1>
 			<div class="descriptionText">
+				<p>To use the Hero Inventory Manager, Guild Viewer, or the Gear Optimization Pages, you will need to retrieve your player token.
+				This website does not retain any user data and your token is saved the the browser session.
+				That means your token will remain active only for you, so long as your browser is opened.</p>
+				<p>The Token can easily be retrieved by a packet sniffer or from your game logs.</p>
+				<br>
+				<h1>Do not give anyone your token that you don't trust with your Questland Data.</h1>
+				<br>
+			</div>
+			<h3>iPhone Token Retrieval Instructions</h3>
+			<div class="descriptionText">
+				<p>The easiest way to retrive your token from an iPhone is to run a packet sniffer.
+				<p>HTTPWatch is free and should work to display your token:
+				<a href='https://itunes.apple.com/us/app/httpwatch-basic-http-sniffer/id658886056?mt=8'>HTTPWatch Basic - HTTP Sniffer</a>
+				Look in any Questland API call for the value "token=" and copy the token to use for this site.</p><br>
+				<br>
+			</div class="descriptionText">
+			<h3>Android Token Retrieval Instructions</h3>
+			<p>Open "My Files" on your android and open your Internal Storage:
+			<p>Android -> data -> com.gamesture.questland  -> files -> logs 
+			<p>Inside the logs directory, you will see a file called "qllog_"
+			<p>If you select and hold for 2 seconds, it will give you the option to Share. Otherwise, copy the log to another location, and open it with a log view app.
+			<p>Once you have opened the file, Search for text "token=" and copy the token to use for this site.</p>
+
+			<br><br>
+				<h2>What's New:</h2>
+			</div>
+			<div class="descriptionText">
+			<h1><p id="imgAlbum">Version: 0.2.3</p></h1>
+				<p id="imgTag">Configured skills, talents, and elements data to be streamed instead of using a static file.</p>
 			<h1><p id="imgAlbum">Version: 0.2.2</p></h1>
 				<p id="imgTag">Fixed issue with Parts not getting associated with Elements.</p>
 			<h1><p id="imgAlbum">Version: 0.2.0</p></h1>
