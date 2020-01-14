@@ -54,7 +54,7 @@ Shadowbox.init({
 <div id="page">
 	<div class="hero" class="container">
 		<?php
-			include 'dynamodb.php';
+			#include 'dynamodb.php';
 			$token = $_SESSION['token'];
 			$ch=curl_init();
 			$curl_headers=array(
@@ -91,8 +91,8 @@ Shadowbox.init({
 			if(isset($_SESSION['token'])){
 				error_reporting(0);
 				$token = $_SESSION['token'];
-				include 's3.php';
-				include 'dynamodb.php';
+				#include 's3.php';
+				#include 'dynamodb.php';
 				$set_itemList[] =array();
 				$item_list[] = array();
 				
@@ -129,15 +129,15 @@ Shadowbox.init({
 				curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$set_itemlist/item_templates/");
 				$item_list = json_decode(curl_exec($ch));
 				curl_close($ch);
-				$s3Items = array();
-				$bucket = 'elasticbeanstalk-us-east-1-331694059185';
-				$s3objects = $s3Client->getIterator('ListObjects', array(
-					'Bucket' => $bucket,
-					'Prefix' => 'resources/storage/'
-				));
-				foreach ($s3objects as $object) {
-					$s3Items[] = $object;
-				}
+				#$s3Items = array();
+				#$bucket = 'elasticbeanstalk-us-east-1-331694059185';
+				#$s3objects = $s3Client->getIterator('ListObjects', array(
+				#	'Bucket' => $bucket,
+				#	'Prefix' => 'resources/storage/'
+				#));
+				#foreach ($s3objects as $object) {
+				#	$s3Items[] = $object;
+				#}
 				$ch=curl_init();
 				$curl_headers=array(
 					"token: $token",
@@ -250,12 +250,12 @@ Shadowbox.init({
 								$db_passive1_effect = $item_list[$ItemKey]->pskls[0];
 								$db_passive2_effect = $item_list[$ItemKey]->pskls[1];
 							}
-							foreach ($s3Items as $object) {
-								if (strpos($object['Key'], strval($image)) !== false) {
-									$s3key = $object['Key'];
-									break;
-								}
-							}
+							#foreach ($s3Items as $object) {
+							#	if (strpos($object['Key'], strval($image)) !== false) {
+							#		$s3key = $object['Key'];
+							#		break;
+							#	}
+							#}
 							echo "<div class=\"$slot"."_txt\">$name</div>";
 							echo "<div class=\"$slot\">";
 								echo "<div class=\"equiphover\"><img id=\"$slot"."_img\" src=\"https://s3.amazonaws.com/$bucket/$s3key\" width=\"50\" height=\"50\"></img>";

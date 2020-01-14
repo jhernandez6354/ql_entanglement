@@ -10,14 +10,7 @@
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>
 <script src="sorttable.js"></script>
-<link rel="stylesheet" type="text/css" href="src/shadowbox.css">
-<script type="test/javascript" src="src/shadowbox.js"></script>
-<script type="test/javascript">
-Shadowbox.init({
-    handleOversize: "drag",
-    modal: true
-});
-</script>
+<link rel="stylesheet" type="text/css" href="src/shadowbox.css">w
 <body>
 
 <!--_____________________________________Header____________________________________ -->
