@@ -47,7 +47,6 @@ Shadowbox.init({
 	<div class="hero" class="container">
 <?php
 #error_reporting(0);
-include 'dynamodb.php';
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -55,7 +54,7 @@ curl_setopt($ch, CURLOPT_URL, 'http://gs-bhs-wrk-02.api-ql.com/client/checkstati
 $current_update = json_decode(curl_exec($ch));
 $wearable_sets = $current_update->data->static_data->crc_details->wearable_sets;
 $static_passive_skills = $current_update->data->static_data->crc_details->static_passive_skills;
-
+$set_itemlist = $current_update->data->static_data->crc_details->item_templates;
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -67,12 +66,12 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$wearable_sets/wearable_sets/");
 $setList = json_decode(curl_exec($ch),true);
 curl_close($ch);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$set_itemlist/item_templates/");
+$itemList = json_decode(curl_exec($ch));
 
-#$setList = json_decode(file_get_contents("./wearable_sets"),true);
-#$weaponPassive = json_decode(file_get_contents("./static_passive_skills"),true);
-try {
-	while (true){
-		$result = $client->scan($params);
 		echo '<table class="sortable" style="width:1300px">';
 		echo "<tr>";
 		echo '<th>Item Name</td>';
@@ -87,14 +86,14 @@ try {
 		echo '<th>Primary Skill</td>';
 		echo '<th>Passive Skill</td>';
 		echo "</tr>";
-		foreach ($result['Items'] as $value) {
-			if ($value['s']['S'] == 'off_hand' || $value['s']['S'] == 'main_hand'){
-				if (isset($value['pskls']['L'])){
-					$potential = (int)$value['stats']['M']['hp']['L'][1]['N'] + (int)$value['stats']['M']['def']['L'][1]['N'] + (int)$value['stats']['M']['dmg']['L'][1]['N'] + (int)$value['stats']['M']['magic']['L'][1]['N'];
-					if ($value['q']['S'] != "common"){
-						if ($value['q']['S'] != "uncommon"){
+		foreach ($itemList as $key => $value) { #Lets make an array from the itemList called $itemArray
+			if ($value->s == 'off_hand' || $value->s == 'main_hand'){
+				if (isset($value->pskls)){
+					$potential = (int)$value->stats->hp[1] + (int)$value->stats->def[1] + (int)$value->stats->dmg[1] + (int)$value->stats->magic[1];
+					if ($value->q != "common"){
+						if ($value->q != "uncommon"){
 							foreach ($setList as $set){
-								if ($value['set']["N"] == $set[0]) {
+								if ($value->set == $set[0]) {
 									$element = $set[1];
 								}
 							}
@@ -103,14 +102,14 @@ try {
 					if (!isset($element)) {
 						$element = "NA";
 					}
-					if (isset($value['pskls']["L"])){
-						if (isSet($value['pskls']["L"][0]["N"])){
-							$db_passive1_effect = $value['pskls']["L"][0]["N"];
+					if (isset($value->pskls)){
+						if (isSet($value->pskls[0])){
+							$db_passive1_effect = $value->pskls[0];
 						}else {
 							$db_passive1_effect = "NA";
 						}
-						if (isSet($value['pskls']["L"][1]["N"])){
-							$db_passive2_effect = $value['pskls']["L"][1]["N"];
+						if (isSet($value->pskls[1])){
+							$db_passive2_effect = $value->pskls[1];
 						}else {
 							$db_passive2_effect = "NA";
 						}
@@ -119,14 +118,14 @@ try {
 					if ($db_passive1_effect != "NA"){
 						foreach ($weaponPassive as $key => $passive){
 							if ($db_passive1_effect == $key) {
-								$db_passive1_effect = $passive["d"];
+								$db_passive1_effect = $passive['d'];
 							}
 						};
 					}
 					if ($db_passive1_effect != "NA"){
 						foreach ($weaponPassive as $key => $passive){
 							if ($db_passive2_effect == $key) {
-								$db_passive2_effect = $passive["d"];
+								$db_passive2_effect = $passive['d'];
 							}
 						};
 					}
@@ -161,15 +160,15 @@ try {
 					$db_passive2_effect= str_replace('<sprite="skill_atlas"','</font><sprite="skill_atlas"',$db_passive2_effect);
 					$db_passive2_effect= str_replace('#SHIELD#','5%',$db_passive2_effect);
 					echo "<tr>";
-					echo '<td>',$value['n']['S'].'</td>';
+					echo '<td>',$value->n.'</td>';
 					echo '<td>',$element.'</td>';
-					echo '<td>',ucfirst($value['q']['S']).'</td>';
-					echo '<td>',ucfirst($value['s']['S']).'</td>';
+					echo '<td>',ucfirst($value->q).'</td>';
+					echo '<td>',ucfirst($value->s).'</td>';
 					echo '<td>',$potential.'</td>';
-					echo '<td>',$value['stats']['M']['hp']['L'][0]['N'].'</td>';
-					echo '<td>',$value['stats']['M']['dmg']['L'][0]['N'].'</td>';
-					echo '<td>',$value['stats']['M']['def']['L'][0]['N'].'</td>';
-					echo '<td>',$value['stats']['M']['magic']['L'][0]['N'].'</td>';
+					echo '<td>',$value->stats->hp[0].'</td>';
+					echo '<td>',$value->stats->dmg[0].'</td>';
+					echo '<td>',$value->stats->def[0].'</td>';
+					echo '<td>',$value->stats->magic[0].'</td>';
 					echo '<td>',$db_passive1_effect.'</td>';
 					echo '<td>',$db_passive2_effect.'</td>';
 					echo "</tr>";
@@ -177,16 +176,7 @@ try {
 			}
 		}
 		echo '</table>';
-		if (isset($result['LastEvaluatedKey'])) {
-			$params['ExclusiveStartKey'] = $result['LastEvaluatedKey'];
-		} else {
-			break;
-		}
-	}
-} catch (DynamoDbException $e) {
-    echo "Unable to scan:\n";
-    echo $e->getMessage() . "\n";
-}
+
 ?>
 	</div>
 	</div>

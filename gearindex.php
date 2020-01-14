@@ -44,27 +44,26 @@ Shadowbox.init({
 <div id="page">
 	<div class="hero" class="container">
 <?php
-include 'dynamodb.php';
 $set_itemList[] =array();
 $item_list[] = array();
-$setList = json_decode(file_get_contents("./wearable_sets"),true);
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_URL, 'http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android');
 $current_update = json_decode(curl_exec($ch));
 $set_itemlist = $current_update->data->static_data->crc_details->item_templates;
+$wearable_sets = $current_update->data->static_data->crc_details->wearable_sets;
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$wearable_sets/item_templates/");
+$setList = json_decode(curl_exec($ch));
+curl_close($ch);
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$set_itemlist/item_templates/");
-$item_list = json_decode(curl_exec($ch));
-curl_close($ch);
-
-try {
-	while (true){
-		$result = $client->scan($params);
-		$array_Result[] = $result['Items'];
+$itemList = json_decode(curl_exec($ch));
 		echo '<table class="sortable" style="width:500px">';
 		echo "<tr>";
 		echo '<th>Item Name</td>';
@@ -90,15 +89,15 @@ try {
 		echo '<th>Orb Link 1</td>';
 		echo '<th>Orb Link 2</td>';
 		echo "</tr>";
-		foreach ($result['Items'] as $value) {
-			if (!empty($value['stats']['M']['def']['L'])){
-				if ($value['s']['S'] != 'off_hand'){
-					if($value['s']['S'] != 'main_hand'){
-						if($value['s']['S'] != 'rune'){
-							if ($value['q']['S'] != "common"){
-								if ($value['q']['S'] != "uncommon"){
+		foreach ($itemList as $key => $value) { #Lets make an array from the itemList called $itemArray
+			if (!empty($value->stats->def)){
+				if ($value->s != 'off_hand'){
+					if($value->s != 'main_hand'){
+						if($value->s != 'rune'){
+							if ($value->q != "common"){
+								if ($value->q != "uncommon"){
 									foreach ($setList as $set){
-										if ($value['set']["N"] == $set[0]) {
+										if ($value->set == $set[0]) {
 											$element = $set[1];
 										}
 									}
@@ -107,47 +106,47 @@ try {
 							if (!isset($element)) {
 								$element = "NA";
 							}
-							$potential = (int)$value['stats']['M']['hp']['L'][1]['N'] + (int)$value['stats']['M']['def']['L'][1]['N'] + (int)$value['stats']['M']['dmg']['L'][1]['N'] + (int)$value['stats']['M']['magic']['L'][1]['N'];
+							$potential = (int)$value->stats->hp[1] + (int)$value->stats->def[1] + (int)$value->stats->dmg[1] + (int)$value->stats->magic[1];
 							echo "<tr>";
-							echo '<td>',$value['n']['S'].'</td>';
+							echo '<td>',$value->n.'</td>';
 							echo '<td>',$element.'</td>';
-							echo '<td>',ucfirst($value['q']['S']).'</td>';
-							echo '<td>',ucfirst($value['s']['S']).'</td>';
+							echo '<td>',ucfirst($value->q).'</td>';
+							echo '<td>',ucfirst($value->s).'</td>';
 							echo '<td>',$potential.'</td>';
-							echo '<td>',$value['stats']['M']['hp']['L'][0]['N'].'</td>';
-							echo '<td>',$value['stats']['M']['hp']['L'][1]['N'].'</td>';
-							echo '<td>',$value['stats']['M']['dmg']['L'][0]['N'].'</td>';
-							echo '<td>',$value['stats']['M']['dmg']['L'][1]['N'].'</td>';
-							echo '<td>',$value['stats']['M']['def']['L'][0]['N'].'</td>';
-							echo '<td>',$value['stats']['M']['def']['L'][1]['N'].'</td>';
-							echo '<td>',$value['stats']['M']['magic']['L'][0]['N'].'</td>';
-							echo '<td>',$value['stats']['M']['magic']['L'][1]['N'].'</td>';
-							if (!empty($value['links']['L'][0]['M'])){
-								$aenhance = $value['links']['L'][0]['M']['e']['S'];
-								$aenhance_per = $value['links']['L'][0]['M']['p']['N'];
-								if (isset($value['links']['L'][0]['M']['i']['L'][0]['L'])){
-									$alink1_tag = $value['links']['L'][0]['M']['i']['L'][0]['L'][0]['N'];
+							echo '<td>',$value->stats->hp[0].'</td>';
+							echo '<td>',$value->stats->hp[1].'</td>';
+							echo '<td>',$value->stats->dmg[0].'</td>';
+							echo '<td>',$value->stats->dmg[1].'</td>';
+							echo '<td>',$value->stats->def[0].'</td>';
+							echo '<td>',$value->stats->def[1].'</td>';
+							echo '<td>',$value->stats->magic[0].'</td>';
+							echo '<td>',$value->stats->magic[1].'</td>';
+							if (!empty($value->links[0])){
+								$aenhance = $value->links[0]->e;
+								$aenhance_per = $value->links[0]->p;
+								if (isset($value->links[0]->i[0])){
+									$alink1_tag = $value->links[0]->i[0][0];
 								}
-								if (isset($value['links']['L'][0]['M']['i']['L'][1]['L'])){
-									$alink2_tag = $value['links']['L'][0]['M']['i']['L'][1]['L'][0]['N'];
+								if (isset($value->links[0]->i[1])){
+									$alink2_tag = $value->links[0]->i[1][0];
 								}
-								if (isset($value['links']['L'][0]['M']['i']['L'][2]['L'])){
-									$alink3_tag = $value['links']['L'][0]['M']['i']['L'][2]['L'][0]['N'];
+								if (isset($value->links[0]->i[2])){
+									$alink3_tag = $value->links[0]->i[2][0];
 								}
-								foreach ($item_list as $key => $item){
+								foreach ($itemList as $linkkey => $item){
 									if (isset($alink1_tag)){
 										if ($item->t == $alink1_tag){
-											$alink1 = $item_list[$key]->n;
+											$alink1 = $item->n;
 										}
 									}
 									if (isset($alink2_tag)){
 										if ($item->t == $alink2_tag){
-											$alink2 = $item_list[$key]->n;
+											$alink2 = $item->n;
 										}
 									}
 									if (isset($alink3_tag)){
 										if ($item->t == $alink3_tag){
-											$alink3 = $item_list[$key]->n;
+											$alink3 = $item->n;
 										}
 									}
 								} 
@@ -155,10 +154,10 @@ try {
 									$alink1 = "";
 								}
 								if (!isset($alink2)){
-									$alink1 = "";
+									$alink2 = "";
 								}
 								if (!isset($alink3)){
-									$alink1 = "";
+									$alink3 = "";
 								}
 							} else {
 								$aenhance = "";
@@ -167,24 +166,24 @@ try {
 								$alink2 = "";
 								$alink3 = "";
 							}
-							if (!empty($value['links']['L'][1]['M'])){
-								$renhance = $value['links']['L'][1]['M']['e']['S'];
-								$renhance_per = $value['links']['L'][1]['M']['p']['N'];
-								if (isset($value['links']['L'][1]['M']['i']['L'][0]['L'])){
-									$rlink1_tag = $value['links']['L'][1]['M']['i']['L'][0]['L'][0]['N'];
+							if (!empty($value->links[1])){
+								$renhance = $value->links[1]->e;
+								$renhance_per = $value->links[1]->p;
+								if (isset($value->links[1]->i[0])){
+									$rlink1_tag = $value->links[1]->i[0][0];
 								}
-								if (isset($value['links']['L'][1]['M']['i']['L'][1]['L'])){
-									$rlink2_tag = $value['links']['L'][1]['M']['i']['L'][1]['L'][0]['N'];
+								if (isset($value->links[1]->i[1])){
+									$rlink2_tag = $value->links[1]->i[1][0];
 								}
-								foreach ($item_list as $key => $item){
+								foreach ($itemList as $key => $item){
 									if (isset($rlink1_tag)){
 										if ($item->t == $rlink1_tag){
-											$rlink1 = $item_list[$key]->n;
+											$rlink1 = $item->n;
 										}
 									}
 									if (isset($rlink2_tag)){
 										if ($item->t == $rlink2_tag){
-											$rlink2 = $item_list[$key]->n;
+											$rlink2 = $item->n;
 										}
 									}
 								}
@@ -192,7 +191,7 @@ try {
 									$alink1 = "";
 								}
 								if (!isset($alink2)){
-									$alink1 = "";
+									$alink2 = "";
 								}
 							} else {
 								$renhance = "";
@@ -210,24 +209,26 @@ try {
 							echo '<td>',$rlink1.'</td>';
 							echo '<td>',$rlink2.'</td>';
 							echo "</tr>";
-							$test = array_search($alink1_tag,$result['Items']);
-							echo $test;
+							$renhance = NULL;
+							$renhance_per = NULL;
+							$rlink1 = NULL;
+							$rlink2 = NULL;
+							$aenhance = NULL;
+							$aenhance_per = NULL;
+							$alink1 = NULL;
+							$alink2 = NULL;
+							$alink3 = NULL;
+							$alink1_tag = NULL;
+							$alink2_tag = NULL;
+							$alink3_tag = NULL;
 						}
 					}
 				}
 			}
 		}
 		echo '</table>';
-		if (isset($result['LastEvaluatedKey'])) {
-			$params['ExclusiveStartKey'] = $result['LastEvaluatedKey'];
-		} else {
-			break;
-		}
-	}
-} catch (DynamoDbException $e) {
-    echo "Unable to scan:\n";
-    echo $e->getMessage() . "\n";
-}
+
+	
 
 ?>
 	</div>

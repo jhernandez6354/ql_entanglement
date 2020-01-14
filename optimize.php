@@ -94,14 +94,26 @@ require_once('header.php')
 
 				$set_itemList[] = array();
 				$itemList[] = array();
-				$setList = json_decode(file_get_contents("./wearable_sets"), true);
-				$weaponPassive = json_decode(file_get_contents("./static_passive_skills"), true);
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				curl_setopt($ch, CURLOPT_URL, 'http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android');
 				$current_update = json_decode(curl_exec($ch));
+				$wearable_sets = $current_update->data->static_data->crc_details->wearable_sets;
+				$static_passive_skills = $current_update->data->static_data->crc_details->static_passive_skills;
 				$set_itemlist = $current_update->data->static_data->crc_details->item_templates;
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$wearable_sets/wearable_sets/");
+				$setList = json_decode(curl_exec($ch),true);
+				curl_close($ch);
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$static_passive_skills/wearable_sets/");
+				$weaponPassive = json_decode(curl_exec($ch),true);
+				curl_close($ch);
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
