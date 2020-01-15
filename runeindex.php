@@ -45,11 +45,25 @@ Shadowbox.init({
 <div id="page">
 	<div class="hero" class="container">
 <?php
-include 'dynamodb.php';
-
-try {
-	while (true){
-		$result = $client->scan($params);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL, 'http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android');
+$current_update = json_decode(curl_exec($ch));
+$wearable_sets = $current_update->data->static_data->crc_details->wearable_sets;
+$set_itemlist = $current_update->data->static_data->crc_details->item_templates;
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$wearable_sets/wearable_sets/");
+$setList = json_decode(curl_exec($ch),true);
+curl_close($ch);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$set_itemlist/item_templates/");
+$itemList = json_decode(curl_exec($ch));
+curl_close($ch);
 		echo '<table class="sortable" style="width:500px">';
 		echo "<tr>";
 		echo '<th>Item Name</td>';
@@ -60,48 +74,38 @@ try {
 		echo '<th>Attack</td>';
 		echo '<th>Defense</td>';
 		echo "</tr>";
-		foreach ($result['Items'] as $value) {
-			if($value['s']['S'] == 'rune'){
-				echo "<tr>";
-				echo '<td>',$value['n']['S'].'</td>';
-				echo '<td>',$value['q']['S'].'</td>';
-				echo '<td>',$value['s']['S'].'</td>';
-				if (!empty($value['stats']['M']['hp']['L'])){
-					echo '<td>',$value['stats']['M']['hp']['L'][1]['N'].'</td>';
-					$HealthStat = $value['stats']['M']['hp']['L'][0]['N'];
-					$AttackStat = "";
-					$DefenseStat = "";
-					
-				}
-				elseif (!empty($value['stats']['M']['dmg']['L'])){
-					echo '<td>',$value['stats']['M']['dmg']['L'][1]['N'].'</td>';
-					$AttackStat = $value['stats']['M']['dmg']['L'][0]['N'];
-					$DefenseStat = "";
-					$HealthStat = "";
-				}
-				elseif (!empty($value['stats']['M']['def']['L'])){
-					echo '<td>',$value['stats']['M']['def']['L'][1]['N'].'</td>';
-					$DefenseStat = $value['stats']['M']['def']['L'][0]['N'];
-					$AttackStat = "";
-					$HealthStat = "";
-				}
-				echo '<td>',$HealthStat.'</td>';
-				echo '<td>',$AttackStat.'</td>';
-				echo '<td>',$DefenseStat.'</td>';
-				echo "</tr>";
-			}
+foreach ($itemList as $key => $value) {
+	if($value->s == 'rune'){
+		echo "<tr>";
+		echo '<td>',$value->n.'</td>';
+		echo '<td>',$value->q.'</td>';
+		echo '<td>',$value->s.'</td>';
+		if (!empty($value->stats->hp)){
+			echo '<td>',$value->stats->hp[1].'</td>';
+			$HealthStat = $value->stats->hp[0];
+			$AttackStat = "";
+			$DefenseStat = "";
+			
 		}
-		echo '</table>';
-		if (isset($result['LastEvaluatedKey'])) {
-			$params['ExclusiveStartKey'] = $result['LastEvaluatedKey'];
-		} else {
-			break;
+		elseif (!empty($value->stats->dmg)){
+			echo '<td>',$value->stats->dmg[1].'</td>';
+			$AttackStat = $value->stats->dmg[0];
+			$DefenseStat = "";
+			$HealthStat = "";
 		}
+		elseif (!empty($value->stats->def)){
+			echo '<td>',$value->stats->def[1].'</td>';
+			$DefenseStat = $value->stats->def[0];
+			$AttackStat = "";
+			$HealthStat = "";
+		}
+		echo '<td>',$HealthStat.'</td>';
+		echo '<td>',$AttackStat.'</td>';
+		echo '<td>',$DefenseStat.'</td>';
+		echo "</tr>";
 	}
-} catch (DynamoDbException $e) {
-    echo "Unable to scan:\n";
-    echo $e->getMessage() . "\n";
 }
+echo '</table>';
 ?>
 	
 	</div>

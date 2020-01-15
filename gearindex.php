@@ -64,6 +64,7 @@ curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$set_itemlist/item_templates/");
 $itemList = json_decode(curl_exec($ch));
+curl_close($ch);
 		echo '<table class="sortable" style="width:500px">';
 		echo "<tr>";
 		echo '<th>Item Name</td>';

@@ -76,9 +76,7 @@ require_once('header.php')
 			if (isset($_SESSION['token'])) {
 				error_reporting(0);
 				$token = $_SESSION['token'];
-				#include 's3.php';
-				#include 'dynamodb.php';
-				#These zeroed values will be used to define the collection array.
+				
 				$t_def_1 = 0;
 				$w_def_1 = 0;
 				$def_1 = 0;
