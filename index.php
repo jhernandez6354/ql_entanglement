@@ -10,7 +10,7 @@
 <script src="jquery/jquery-3.3.1.min.js"></script>
 <script src="jquery/aws-sdk-2.428.0.min.js"></script>
 <script src="sorttable.js"></script>
-<link rel="stylesheet" type="text/css" href="src/shadowbox.css">w
+<link rel="stylesheet" type="text/css" href="src/shadowbox.css">
 <body>
 
 <!--_____________________________________Header____________________________________ -->
@@ -67,6 +67,8 @@
 				<h2>What's New:</h2>
 			</div>
 			<div class="descriptionText">
+			<h1><p id="imgAlbum">Version: 0.3.0</p></h1>
+				<p id="imgTag">Converted all pages to dynamically pull from the Questland Servers. Reconfigured Optimize script for PHP 7.3</p>
 			<h1><p id="imgAlbum">Version: 0.2.3</p></h1>
 				<p id="imgTag">Configured skills, talents, and elements data to be streamed instead of using a static file.</p>
 			<h1><p id="imgAlbum">Version: 0.2.2</p></h1>

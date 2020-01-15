@@ -35,7 +35,7 @@ require_once('header.php')
 		<div class="container">
 			<!--_____________________________________Logo____________________________________ -->
 			<div id="logo">
-				<h1>Character Manager</h1>
+				<h1>Gear Optimizer Tool</h1>
 			</div>
 			<!--_____________________________________Navigation____________________________________ -->
 			<nav id="nav">
@@ -143,17 +143,7 @@ require_once('header.php')
 					}
 					return false;
 				}
-		#This whole thing can be read in two parts
-		#Part 1: Index all of the currently owned gear and find out if user has at least two pieces to get the link
-		#		We want to put a weight on the items, where if a link in one item is the same as a link from another pick, we add 1 to the picked item weight.
-		#		Additionally, sum the potential the filtered item and two best links so we can compare it to the next item.
-		#		Ex. Summed Head Item 2 is 10 potential lower, but one of the linked items has a weight that is 2 higher than Summed Head Item 1, Head 2 is more valuable.
-		#	Once the index is complete, we should have three arrays. 
-				# 1. The origianl $itemArray which contains all items available.
-				# 2. The filtered $collection_picks containing all useable items (There should be at least one item in each main slot)
-				# 3. The weighted $link_list
-		#	We only need 14 armor links so pick the top items from the weighted list until the sum of the weight equals 14.
-		#	Now make one more array, which contains all items picked for the main slots and links.
+		
 
 				foreach ($itemList as $key => $item) { #Lets make an array from the itemList called $itemArray
 					$tag=NULL;
@@ -194,7 +184,7 @@ require_once('header.php')
 						if ($slot == 'Exactshard'){ #Make sure we don't select any orbs or special items.
 							$parts = $item['a'][5];
 						};
-						if ($parts >= 30) { #There need to be at least 30 parts for consideration.
+						if ($parts > 0) { #There need to be at least 30 parts for consideration.
 							#If there are enough parts, convert the part tag into a gear tag.
 							$shardName=$itemArray[$tag]['name'];
 							foreach ($itemList as $mybasekey => $mybaseitem) {
@@ -208,7 +198,7 @@ require_once('header.php')
 						};
 					};
 					$quality = ucfirst($itemArray[$tag]['quality']);
-					if ($quality == 'Legendary' || $quality == 'Artifact1' || $quality == 'Artifact2' || $quality == 'Artifact2' || $quality == 'Artifact3' || $quality == 'Artifact4') {
+					if ($quality == 'Legendary') {
 						if  ($slot == 'Amulet' || $slot == 'Talisman' || $slot == 'Head'|| $slot == 'Chest'|| $slot == 'Gloves'|| $slot == 'Feet'|| $slot == 'Ring'){
 							#This ensures we only check the appropriate gear, so lets get some details about the links.
 							$link1=$itemArray[$tag]['link1'];
@@ -261,8 +251,9 @@ require_once('header.php')
 				};
 
 				#Now that our items are filted and the array is setup, create a weighted list for each piece of linked armor.
+				#We need to use the original item list to ensure we get an accurate count of the possible links an item has.
 				foreach($heroArray as $filterKey => $filterItem){
-					#if ($filterItem['quality'] == 'Legendary'){ #I'm filtering anything but legendary to help with gear potential skew
+					if ($filterItem['quality'] == 'Legendary'){ #I'm filtering anything but legendary to ensure we don't get extra counts from artifact gear
 						$weight=NULL;
 						$potential=NULL;
 						$quality=NULL;
@@ -356,8 +347,10 @@ require_once('header.php')
 								'slot' => array_values($filterItem['link3'])[0]['link_slot'],	
 							];
 						};
-					#};
+					};
 				};
+				#echo '<pre>'; print_r($weightedList); echo '</pre>';
+				#exit;
 				#Now we have our equippable items and the weighted list.
 				#In this sequence:
 					#Find the highest potential items for each slot and update the equip field on that weighted item.
@@ -366,7 +359,7 @@ require_once('header.php')
 					if (isSet($equipArray)){
 						if (findKey($equipArray,$equipItem['slot']) == $equipItem['slot']){ #First, check if the slot is already used.
 							#The slot is used, so we need to compare the one currently set.
-							if ($equipItem['potential'] > $equipArray[$equipItem['slot']]['potential'] && $equipItem['weight'] >= 5){ 
+							if ($equipItem['potential'] > $equipArray[$equipItem['slot']]['potential'] && $equipItem['weight'] >= 3){ #$equipArray[$equipItem['slot']]['weight']){ 
 								$equipArray[$equipItem['slot']]=[
 									'potential' => $equipItem['potential'],
 									'weight' => $equipItem['weight'],
@@ -416,14 +409,20 @@ require_once('header.php')
 			?>
 			<div class="mark_placeholder"></div>
 			<div class="mark_placeholder_txt"></div>
-
-
 		</div>
 		<div class="hero" class="container">
 			<div class="descriptionText">
 				<br><br><br><br>
 				<h2>Work In Progress</h2>
-				<p>The information displayed above is still in testing and incomplete.</p>
+				<p>The information displayed above is still in testing and incomplete.</p><br>
+				<p>Current formula for calculating gear optimization:</p>
+				<p>Create an array of all available items and all items owned by the player (Shard items are also counted).
+				Loop through each piece of gear owned by the hero and record that piece as well as any armor links it is associated with.
+				A "weighted" array will be created from this, where each link occurence will increase the weight of the item.</p>
+				Each legendary item only gets recorded once to ensure artifact gear does not multiply the counts.
+				Once all gear is accounted for, loop through the weighted aray and assign gear to each slot based on the following:</p>
+				<p>1. If nothing is in the slot, record the item there.</p>
+				<p>2. If the item higher potential than the currently slotted item and the player can make 3 or more links, replace the slotted item.</p>
 			</div>
 		</div>
 	</div>
