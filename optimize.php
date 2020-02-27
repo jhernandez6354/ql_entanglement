@@ -61,11 +61,20 @@ require_once('header.php')
 			$curl_headers = array(
 				"token: $token",
 			);
-			curl_setopt($ch, CURLOPT_URL, 'http://149.56.27.225/client/init/');
+			$uri='149.56.27.225';
+			curl_setopt($ch, CURLOPT_URL, "http://$uri/client/init/");
 			curl_setopt($ch, CURLOPT_HEADER, false);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			$get_hero = json_decode(curl_exec($ch), true);
+			if(strpos($get_hero['status'], 'error') !== false){
+				$uri='gs-global-wrk-04.api-ql.com';
+				curl_setopt($ch,CURLOPT_URL,"http://$uri/client/init/");
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				$get_hero = json_decode(curl_exec($ch), true);
+			} 
 			curl_close($ch);
 			$player_id = $get_hero['data']['hero']['id'];
 			$SESSION['player_id'] = $player_id;

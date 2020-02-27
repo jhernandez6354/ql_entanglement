@@ -56,7 +56,7 @@ $wearable_sets = $current_update->data->static_data->crc_details->wearable_sets;
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$wearable_sets/item_templates/");
+curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-01.api-ql.com/staticdata/key/en/android/$wearable_sets/wearable_sets/");
 $setList = json_decode(curl_exec($ch));
 curl_close($ch);
 $ch = curl_init();

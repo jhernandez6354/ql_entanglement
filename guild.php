@@ -55,18 +55,26 @@ Shadowbox.init({
 		
 		<?php
 			$token = $_SESSION['token'];
-			include 'dynamodb.php';
+			
 			error_reporting(0);
 			$ch=curl_init();
 			$curl_headers=array(
 				"token: $token",
 			);
-			$proxy='https://cors-anywhere.herokuapp.com/';
-			curl_setopt($ch,CURLOPT_URL,'http://149.56.27.225/rankings/getguildranking/?type=battle_event_guild');
+			$uri='149.56.27.225';
+			curl_setopt($ch,CURLOPT_URL,"http://$uri/rankings/getguildranking/?type=battle_event_guild");
 			curl_setopt($ch, CURLOPT_HEADER, false);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			$guild_id = json_decode(curl_exec($ch), true);
+			if(strpos($guild_id['status'], 'error') !== false){
+				$uri='gs-global-wrk-04.api-ql.com';
+				curl_setopt($ch,CURLOPT_URL,"http://$uri/client/init/");
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				$guild_id = json_decode(curl_exec($ch), true);
+			} 
 			curl_close($ch);
 			$guild = $guild_id["data"]["hero2"]["guild_id"]; //Target a specific value for this to work.
 			foreach($guild_id["data"]["guilds_list"] as $guilds){

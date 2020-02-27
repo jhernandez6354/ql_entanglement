@@ -60,16 +60,25 @@ Shadowbox.init({
 			$curl_headers=array(
 				"token: $token",
 			);
-			curl_setopt($ch,CURLOPT_URL,'http://149.56.27.225/client/init/');
+			$uri='149.56.27.225';
+			curl_setopt($ch,CURLOPT_URL,"http://$uri/client/init/");
 			curl_setopt($ch, CURLOPT_HEADER, false);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			$get_hero = json_decode(curl_exec($ch), true);
+			if(strpos($get_hero['status'], 'error') !== false){
+				$uri='gs-global-wrk-04.api-ql.com';
+				curl_setopt($ch,CURLOPT_URL,"http://$uri/client/init/");
+				curl_setopt($ch, CURLOPT_HEADER, false);
+				curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				$get_hero = json_decode(curl_exec($ch), true);
+			} 
 			curl_close($ch);
 			$player_id = $get_hero['data']['hero']['id'];
 			$SESSION['player_id'] = $player_id;
 			$ch=curl_init();
-			curl_setopt($ch,CURLOPT_URL,'http://149.56.27.225/user/getprofile/?hero_id='.$player_id);
+			curl_setopt($ch,CURLOPT_URL,"http://$uri/user/getprofile/?hero_id=".$player_id);
 			curl_setopt($ch, CURLOPT_HEADER, false);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -99,7 +108,7 @@ Shadowbox.init({
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($ch, CURLOPT_URL, 'http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android');
+				curl_setopt($ch, CURLOPT_URL, "http://gs-bhs-wrk-02.api-ql.com/client/checkstaticdata/?lang=en&graphics_quality=hd_android");
 				$current_update = json_decode(curl_exec($ch));
 				$wearable_sets = $current_update->data->static_data->crc_details->wearable_sets;
 				$static_passive_skills = $current_update->data->static_data->crc_details->static_passive_skills;
@@ -142,13 +151,21 @@ Shadowbox.init({
 				$curl_headers=array(
 					"token: $token",
 				);
-				
+				$uri='149.56.27.225';
 				$player_id =$SESSION['player_id'];
-				curl_setopt($ch,CURLOPT_URL,'http://149.56.27.225/user/getprofile/?hero_id='.$player_id);
+				curl_setopt($ch,CURLOPT_URL,"http://$uri/user/getprofile/?hero_id=".$player_id);
 				curl_setopt($ch, CURLOPT_HEADER, false);
 				curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				$player_data = json_decode(curl_exec($ch), true);
+				if(strpos($player_data['status'], 'error') !== false){
+					$uri='gs-global-wrk-04.api-ql.com';
+					curl_setopt($ch,CURLOPT_URL,"http://$uri/client/init/");
+					curl_setopt($ch, CURLOPT_HEADER, false);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_headers);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					$player_data = json_decode(curl_exec($ch), true);
+				} 
 				curl_close($ch);
 				echo '<table class="sortable" style="width:500px">';
 				echo "<tr>";
